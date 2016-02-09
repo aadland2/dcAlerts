@@ -43,10 +43,10 @@ def reset_cursor():
 
 
 # Tokens 
-access_token = "2600054148-vbUOJ0Oe23IUvaMjSgZWtTJHDjQWqR2ZDJn8i8f"
-access_token_secret = "EKk6B69zlehQIQmndEJPorhR3b2SLk3tUFP9oeJH9o23f"
-consumer_key = "97h2n7avgkJp4snsNXm0RMaTB"
-consumer_secret = "fjT8sdgLTMkYOg9N8GrXU0cGwGUSyH3CbwD33V8jswTJJdcQr3"
+access_token = # Put token here
+access_token_secret = # Put token here
+consumer_key = # Put token here
+consumer_secret = # Put token here
 
 #consumer key, consumer secret, access token, access secret.
 ckey= consumer_key
