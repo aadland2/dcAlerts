@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Event App Example </title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+</head>
+<body>
+	<div id="map" style="position: absolute;
+	top:0;
+	bottom: 0;
+	left: 0;
+	right: 0;"> </div>
+
+
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+	<script>
+
+
+
+var underlays = {};
+	{% block content %}
+	{% for v in layer_ids %}
+		var d = "{{v.type}}"
+		var iLayer = new L.LayerGroup();
+		{% for point in v.points %}
+		var points =  {{v.points|safe}};
+		function onEachFeature(feature, layer) {
+			var popupContent = " ";
+
+			if (feature.properties && feature.properties.body) {
+				popupContent += feature.properties.body;
+			}
+
+			layer.bindPopup(popupContent);
+		}
+
+
+		L.geoJson([points], {
+
+			style: function (feature) {
+				return feature.properties && feature.properties.style;
+			},
+
+			onEachFeature: onEachFeature,
+
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, {
+					radius: 4,
+					fillColor: "#ff7800",
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8
+				});
+			}
+		}).addTo(iLayer);
+		{% endfor %}
+
+
+
+
+		underlays[d] = iLayer; 
+	
+
+	{% endfor %}
+	{% endblock %}
+
+
+
+
+
+
+
+	console.log("testing");
+	
+	console.log(underlays);
+
+
+	
+
+	
+
+
+
+	    var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IjZjNmRjNzk3ZmE2MTcwOTEwMGY0MzU3YjUzOWFmNWZhIn0.Y8bhBaUMqFiPrDRW9hieoQ';
+
+	    var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr}),
+		    streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+
+		var map = L.map('map', {
+			center: [38.9047, -77.0164],
+			zoom: 13,
+			layers: [streets]
+		});
+
+		var baseLayers = {
+			"Streets": streets,
+			"Grayscale": grayscale
+			
+		};
+
+
+		L.control.layers(baseLayers,underlays).addTo(map);
+	</script>
+	<span class="col1">...</span>
+        <span style="line-height:30px; background-color:#eeeeee; height:300px; width:100px; float:left; padding:5px; ">
+            Some Random Text where a navbar will go 
+			
+        </span>
+        
+</div>
+
+
+</body>
+</html>

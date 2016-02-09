@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Event App Example </title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" /> -->
+	<link rel="stylesheet" href="/static/leaflet.css" />
+
+</head>
+<body style= "background-color: #d1c9b8;">
+	<div style = "width: 900px; margin: auto; text-align: center;"> 
+		<h2 "font-size: 40px; margin-top: 44px;"> DC Alerts Demo: Toggle Layers </h2>
+	<div id="map" style="width: 100%; height: 500px;"> </div>
+	<script src="/static/leaflet.js"></script> 
+	<!--<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script> -->
+	<script>
+
+	
+	var underlays = {};
+	
+	// v = "{{layer_ids}}"
+		var d = "Points"
+		var iLayer = new L.LayerGroup();
+		
+		
+		
+		{% block content %}
+		var points = {{layer_ids|safe}};
+		
+		function onEachFeature(feature, layer) {
+			var popupContent = " ";
+
+			if (feature.properties && feature.properties.body) {
+				popupContent += feature.properties.body;
+			}
+
+			layer.bindPopup(popupContent);
+		}
+
+
+		L.geoJson([points], {
+
+			style: function (feature) {
+				return feature.properties && feature.properties.symbol;
+			},
+
+			onEachFeature: onEachFeature,
+
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, {
+					radius: 8,
+					fillColor: feature.properties.symbol,
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8
+				});
+			}
+		}).addTo(iLayer);
+		
+
+
+
+		underlays[d] = iLayer; 
+	
+
+		{% endblock %}
+	
+	    var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			// mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IjZjNmRjNzk3ZmE2MTcwOTEwMGY0MzU3YjUzOWFmNWZhIn0.Y8bhBaUMqFiPrDRW9hieoQ';
+			mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw';
+
+
+	    var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr}),
+		    streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+
+		var map = L.map('map', {
+			center: [38.9047, -77.0164],
+			zoom: 13,
+			layers: [streets]
+		});
+
+		var baseLayers = {
+			"Streets": streets,
+			"Grayscale": grayscale
+			
+		};
+
+
+		L.control.layers(baseLayers,underlays).addTo(map);
+	</script>
+
+        
+</div>
+</div>
+	<div style="width: 900px; margin: auto;">
+		<p style="text-align:center"> This is an application stack used to demonstrate the Python Flask library and the Javascript Leaflet library. </p>
+		<p style="text-align:center">The data used in this project is extracted from the Twitter handle <a href="https://twitter.com/dcalerts?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor"> @dcalerts. </a>  </p> 
+		<p style="text-align:center">The text is geocoded using a regex parser for the address and the <a href="https://pypi.python.org/pypi/geocoder/1.8.0"> geocoder package. </a>                                      </p>
+		<p style="text-align:center"> Finally, the event type is classfied using a <a href="http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html"> linear svm </a> 
+			from the scikit-learn package </a> </p>
+		<p style="text-align:center">  Full details on the project and code can be found on my <a href= "https://github.com/aadland2" > github page.  </a> </p>
+
+
+
+
+	
+
+		
+
+		
+	</div>
+</body>
+</html>
