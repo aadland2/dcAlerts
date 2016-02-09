@@ -8,7 +8,7 @@ from flask import Flask,render_template
 app = Flask(__name__)
 # app.config['DEBUG'] = True
 import json 
-
+import os 
 
 #try:
 #    conn = psycopg2.connect("dbname='SocialMedia' user='postgres' host='localhost' password='postgres'")
@@ -64,8 +64,8 @@ def hello():
     
 
 if __name__ == "__main__":
-    # port = int(os.environ.get('PORT', 5000))
-    # app.run(host='0.0.0.0', port=port)
-    app.run() 
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+    # app.run() 
 
 
