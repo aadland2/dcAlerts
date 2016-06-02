@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+  font-family: "Wire One";
+  margin: auto;
+  position: relative;
+  padding: 20px;
+  height: 100%;
+}
+ 
+form {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+ 
+.node {
+    border: solid 1px white;
+    line-height: 0.95;
+    overflow: hidden;
+    position: absolute;
+    border-radius: 6px;
+    background-image: -webkit-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    background-image:    -moz-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    background-image:     -ms-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    background-image:      -o-linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0));
+    background-image:         linear-gradient(top, hsla(0,0%,100%,.3), hsla(0,0%,100%,0)); 
+    text-shadow: -1px -1px 2px hsla(0,0%,100%,0.25),
+        -1px -1px 2px hsla(0,0%,100%,0.25),
+        -1px 1px 2px hsla(0,0%,100%,0.25),
+        1px -1px 2px hsla(0,0%,100%,0.25),
+        -1px 0px 2px hsla(0,0%,100%,0.25),
+        1px 0px 2px hsla(0,0%,100%,0.25);
+}
+
+.node div {
+   padding: 6px 4%;
+}
+
+
+</style>
+<body>
+  
+ 
+  <div id="summary"></div>
+  <div id="visual"> </div>
+
+</body>
+<script src="static/js/d3.v3.min.js"></script>
+<script>
+
+var response_data = {{data|safe}};
+var summary = {{summary|safe}}
+var width = innerWidth-40,
+    height = innerHeight-40,
+    color = d3.scale.category20c()
+                      .domain(["negative","positive","neutral"])
+                      .range(["red","green","grey"]),
+    div = d3.select("#visual").append("div")
+       .style("position", "relative");
+
+var treemap = d3.layout.treemap()
+    .size([width, height])
+    .sticky(true)
+    .value(function(d) { return d.size; });
+ 
+var node = div.datum(response_data).selectAll(".node")
+      .data(treemap.nodes)
+    .enter().append("div")
+      .attr("class", "node")
+      .call(position)
+      .style("background-color", function(d) {
+          return d.name == 'tree' ? '#fff' : color(d.sentiment.type); })
+      .append('div')
+      .style("font-size", function(d) {
+          // compute font size based on sqrt(area)
+          return Math.max(20, 0.18*Math.sqrt(d.area))+'px'; })
+      .text(function(d) { return d.children ? null : d.text; })
+      .on("click",function(d){
+        window.open(d.disambiguated.dbpedia,'_blank');
+        window.open(d.disambiguated.dbpedia);
+      });
+ 
+function position() {
+  this.style("left", function(d) { return d.x + "px"; })
+      .style("top", function(d) { return d.y + "px"; })
+      .style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
+      .style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; });
+}
+
+
+
+
+
+</script>
